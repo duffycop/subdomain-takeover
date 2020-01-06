@@ -1,6 +1,6 @@
 # subdomain-takeover
 
-This is a personal script made to look and search for subdomain takeover using Amass, Findomains and Subjack.
+This is a personal script made to search and test for subdomain takeover using Amass, Findomains and Subjack.
 The requirements to use this tool is the same as the requirements for every tool mentioned before.
 Theres a filenamed fingerprints.json needed for Subjack, you can place it wherever you like, you just need to set the path in $finger variable.
 
