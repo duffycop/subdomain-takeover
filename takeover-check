@@ -29,7 +29,6 @@ fi
 
 cd $temp
 
-#sublist3r -d $domain -p 80,443 -t 50 -o $temp/$domain.txt
 findomain-linux --output -t $domain
 amass enum -norecursive -noalts -d $domain >> $temp/$domain.txt
 
