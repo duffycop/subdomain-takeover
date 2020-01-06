@@ -1,0 +1,44 @@
+#!/bin/bash
+
+strclean="clean"
+strcleanall="cleanall"
+domain=somedomain.com
+
+finger=~/fingerprints.json
+
+dir=~/.takeover/$domain
+temp="$(mktemp -d /tmp/takeover.$domain.XXXXXX)"
+
+if [ "$1" == "$strcleanall" ]; then
+  rm -Rf /tmp/takeover.*
+  rm -Rf ~/.takeover
+  domain=$2
+elif [ "$1" == "$strclean" ]; then
+  rm -Rf /tmp/takeover.*
+  domain=$2
+else
+  domain=$1
+fi
+
+dir=~/.takeover/$domain
+temp="$(mktemp -d /tmp/takeover.$domain.XXXXXX)"
+
+if [ ! -d "$dir" ]; then
+    mkdir -p $dir
+fi
+
+cd $temp
+
+#sublist3r -d $domain -p 80,443 -t 50 -o $temp/$domain.txt
+findomain-linux --output -t $domain
+amass enum -norecursive -noalts -d $domain >> $temp/$domain.txt
+
+cat $temp/$domain.txt >> $temp/.$domain.tmp
+rm $temp/$domain.txt
+sort $temp/.$domain.tmp | uniq | tee $temp/$domain.txt
+
+rm -Rf $temp/*.tmp
+
+subjack -w $temp/$domain.txt -t 100 -timeout 30 -o $dir/result.txt -ssl -c $finger -v 3
+cp $temp/$domain.txt $dir/subdomains.txt
+rm -Rf $temp
